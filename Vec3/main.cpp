@@ -4,7 +4,7 @@
 
 template <class X>
 
-class Vec3 
+class Vec3
 {
 private:
 
@@ -12,13 +12,13 @@ private:
 
 public:
 
-	Vec3() 
+	Vec3()
 	{
 		x = 0; y = 0; z = 0;
 	}
-	Vec3( X x, X y, X z): x(x) ,y(y), z(z)	{}
+	Vec3(X x, X y, X z) : x(x), y(y), z(z) {}
 
-	Vec3(Vec3 &vec) 
+	Vec3(Vec3 &vec)
 	{
 		x = vec.getX();
 		y = vec.getY();
@@ -78,18 +78,18 @@ public:
 		x = 0; y = 0; z = 0;
 	}
 
-	void normalize() 
+	void normalize()
 	{
 		X length = sqrt(x*x + y*y + z*z);
-		
-		if (length !=0) {
+
+		if (length != 0) {
 			x /= length;
 			y /= length;
 			z /= length;
 		}
 	}
 
-	X distance_to(Vec3 & vector) 
+	X distance_to(Vec3 & vector)
 	{
 		X dx, dy, dz;
 		dx = vector.x - x;
@@ -103,10 +103,10 @@ public:
 
 int main() {
 
-	Vec3<int> v(3,3,3), u(2,2,2), w;
+	Vec3<int> v(3, 3, 3), u(2, 2, 2), w;
 	w = v + u;
 	std::cout << "vector w(u+v): x = " << w.getX() << " y = " << w.getY() << " z = " << w.getZ() << std::endl;
 	system("pause");
-	return 0; 
+	return 0;
 }
 
