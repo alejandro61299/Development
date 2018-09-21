@@ -83,14 +83,14 @@ bool j1App::Awake()
 		//	ret = item->data->Awake(config_node.child(item->data->name.GetString()));
 		//	printf("%c", config_node.child(item->data->name.GetString()));
 		//}
-	
-
-		if (item->data->Awake(config_node.child(item->data->name.GetString())) != NULL );
 		
+		pugi::xml_node *module_config = nullptr;
+		module_config = &config_node.child(item->data->name.GetString());
+
 		LOG("======================= %s", item->data->name.GetString());
+		item->data->Awake(*module_config);
 		
 		item = item->next;
-
 	}
 
 	return ret;
