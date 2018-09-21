@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Config file for the game -->
+<config>
+  <game_title> My epic game with XML </game_title>
+  
+  <renderer>
+    <vsync value="true"/>
+  </renderer>
+  <audio>
+    <default_music_fade_time value="true"/>
+  </audio>
+  <input>
+    <num_keys value="352"/>
+    <num_mouse_buttons value="5"/>
+    <last_keys_pressed_buffer value="50"/>
+  </input>
+  <textures>
+  </textures>
+  <window>
+  </window>
+  <definitions>
+    <fullscreen value="false"/>
+    <borderless value="false"/>
+    <resizable value="true"/>
+    <fullscreen_window value="false"/>
+    <width value="1024"/>
+    <height value="768"/>
+    <scale value="1"/>
+  </definitions>
+</config>
