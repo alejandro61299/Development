@@ -49,8 +49,10 @@ public:
 	// will one execute by the very end of the frame
 	// Load / Save
 
-	void Save();
-	void Load() const;
+	//void Save();
+	//void Load() const;
+	bool LoadDoc(const char* path) const;
+	bool SaveState() const;
 
 private:
 
@@ -92,7 +94,7 @@ private:
 	uint				frames;
 	float				dt;
 
-	pugi::xml_document	config_file;
+    pugi::xml_document	config_file;
 	pugi::xml_node		config;
 	pugi::xml_node		app_config;
 	int					argc;

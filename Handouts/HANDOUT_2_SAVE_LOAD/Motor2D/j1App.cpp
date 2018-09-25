@@ -158,40 +158,40 @@ void j1App::FinishUpdate()
 	// TODO 1: This is a good place to call load / Save functions
 
 	if (save_app == true) {
-		Save();
+		/*Save();*/
 		save_app = false;
 	}
 
 	if (load_app == true) {
-		Load();
-		save_app = false;
+		/*Load();*/
+		load_app = false;
 	}
 
 }
 
-void j1App::Save() 
-{
-	p2List_item<j1Module*>* item;
-	item = modules.start;
-
-	for (item = modules.start; item != NULL; item = item->next)
-	{
-		item->data->Save( );
-	}
-
-}
-
-
-void j1App::Load() const
-{
-	p2List_item<j1Module*>* item;
-	item = modules.start;
-
-	for (item = modules.start; item != NULL; item = item->next)
-	{
-		item->data->Load(*config);
-	}
-}
+//void j1App::Save() 
+//{
+//	p2List_item<j1Module*>* item;
+//	item = modules.start;
+//
+//	for (item = modules.start; item != NULL; item = item->next)
+//	{
+//		item->data->Save(config);
+//	}
+//
+//}
+//
+//
+//void j1App::Load() const
+//{
+//	p2List_item<j1Module*>* item;
+//	item = modules.start;
+//
+//	for (item = modules.start; item != NULL; item = item->next)
+//	{
+//		item->data->Load(config);
+//	}
+//}
 
 // Call modules before each loop iteration
 bool j1App::PreUpdate()
@@ -307,5 +307,51 @@ const char* j1App::GetOrganization() const
 // TODO 5: Create a method to actually load an xml file
 // then call all the modules to load themselves
 
+bool j1App::LoadDoc(const char* path) const
+{
+	bool ret = true;
+	pugi::xml_document doc;
+	pugi::xml_parse_result result = doc.load_file("path");
+
+	if (result == NULL)
+	{
+		LOG("Could not load xml file %s. pugi error: %s", path, result.description());
+		ret = false;
+	}
+	else
+	{
+		p2List_item<j1Module*>* item;
+		item = modules.start;
+
+		while (item != NULL && ret == true)
+		{
+			ret = item->data->Load(doc.child(item->data->name.GetString()));
+			item = item->next;
+		}
+	}
+
+	return ret;
+}
+
+
 // TODO 7: Create a method to save the current state
 
+bool j1App::SaveState() const
+{
+	bool ret = true;
+	pugi::xml_document doc;
+	pugi::xml_node save_node = doc.append_child("save");
+	p2List_item<j1Module*>* item;
+
+	item = modules.start;
+
+	while (item != NULL && ret == true)
+	{
+		save_node.append_copy( item->data->Save() );
+		item = item->next;
+	}
+
+	doc.save_file("savegame.xml");
+
+	return ret;
+}
