@@ -12,11 +12,12 @@ struct MapLayer
 	p2SString			name;
 	uint				width = 0u;
 	uint				height = 0u;
-	uint*	            data = nullptr;
-	~MapLayer () 
+	uint*	            tiles = nullptr;
+	inline uint Get(int x, int y) const;
+	~MapLayer()
 	{
-		if (data!= NULL)
-		delete[]  data;
+		if (tiles != NULL)
+		delete[]  tiles;
 	}
 };
 // ----------------------------------------------------
