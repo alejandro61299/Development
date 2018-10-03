@@ -18,5 +18,8 @@
     <ClInclude Include="..\String.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\String2.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
