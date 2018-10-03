@@ -5,21 +5,23 @@ typedef unsigned int uint;
 
 class String
 {
-public:
-	char*    data;
-	uint     length;
 
+private:
+	char*       data;
+	uint        alloc_memory;
+
+public:
 	String()
 	{
-		data = new char[0];
-		length = 0;
+		data = nullptr;
+		alloc_memory = 0u;
 	}
 
 	String(const String &str)
 	{
-		data = new char[length = str.length];
+		data = new char[alloc_memory = str.alloc_memory];
 
-		for (uint i = 0; i < length; i++)
+		for (uint i = 0u; i < alloc_memory; i++)
 		{
 			data[i] = str.data[i];
 		}
@@ -34,9 +36,9 @@ public:
 			str_length++;
 		}
 
-		data = new char[length = str_length];
+		data = new char[alloc_memory = str_length];
 
-		for (uint i = 0; i < length; i++)
+		for (uint i = 0; i < alloc_memory; i++)
 		{
 			data[i] = str[i];
 		}
@@ -44,23 +46,23 @@ public:
 
 	~String()
 	{
-		delete(data);
+		delete[] data;
 	}
 
 	String operator += (const String &str)
 	{
-		uint    new_length = length + str.length;
+		uint    new_length = alloc_memory + str.alloc_memory;
 		char*   new_str = new char[new_length];
 
-		for (uint i = 0; i < length; i++) {
+		for (uint i = 0; i < alloc_memory; i++) {
 			new_str[i] = data[i];
 		}
-		for (uint i = 0; i < str.length; i++) {
-			new_str[length + i] = str.data[i];
+		for (uint i = 0; i < str.alloc_memory; i++) {
+			new_str[alloc_memory + i] = str.data[i];
 		}
 
 		delete data;
-		length = new_length;
+		alloc_memory = new_length;
 		data = new_str;
 
 		return *this;
@@ -74,10 +76,10 @@ public:
 	String operator = (const String &str)
 	{
 		delete data;
-		length = str.length;
-		data = new char[length];
+		alloc_memory = str.alloc_memory;
+		data = new char[alloc_memory];
 
-		for (uint i = 0; i < length; i++) {
+		for (uint i = 0; i < alloc_memory; i++) {
 			data[i] = str.data[i];
 		}
 		return *this;
@@ -85,11 +87,11 @@ public:
 
 	bool operator == (const String &str) const
 	{
-		if (length == str.length) return false;
+		if (alloc_memory == str.alloc_memory) return false;
 		uint n = 0;
-		while (data[n] == str.data[n] && n < length) n++;
+		while (data[n] == str.data[n] && n < alloc_memory) n++;
 
-		return (n == length);
+		return (n == alloc_memory);
 	}
 
 	String operator += (const char *str)
@@ -114,6 +116,7 @@ public:
 		String new_str(str);
 		return (*this == new_str);
 	}
+
 };
 
 #endif // !STRING_H
