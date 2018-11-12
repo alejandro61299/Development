@@ -106,7 +106,7 @@ p2List_item<PathNode>* PathList::GetNodeLowestScore() const
 PathNode::PathNode() : g(-1), h(-1), pos(-1, -1), parent(NULL)
 {}
 
-PathNode::PathNode(int g, int h, const iPoint& pos, const PathNode* parent) : g(g), h(h), pos(pos), parent(parent)
+PathNode::PathNode(int g, int h, const iPoint& pos,  PathNode* parent) : g(g), h(h), pos(pos), parent(parent)
 {}
 
 PathNode::PathNode(const PathNode& node) : g(node.g), h(node.h), pos(node.pos), parent(node.parent)
@@ -115,7 +115,7 @@ PathNode::PathNode(const PathNode& node) : g(node.g), h(node.h), pos(node.pos), 
 // PathNode -------------------------------------------------------------------------
 // Fills a list (PathList) of all valid adjacent pathnodes
 // ----------------------------------------------------------------------------------
-uint PathNode::FindWalkableAdjacents(PathList& list_to_fill) const
+uint PathNode::FindWalkableAdjacents(PathList& list_to_fill) 
 {
 	iPoint cell;
 	uint before = list_to_fill.list.count();
@@ -167,50 +167,67 @@ int PathNode::CalculateF(const iPoint& destination)
 // ----------------------------------------------------------------------------------
 int j1PathFinding::CreatePath(const iPoint& origin, const iPoint& destination)
 {
-	// TODO 1: if origin or destination are not walkable, return -1
-	if  (IsWalkable(origin) == false || IsWalkable(destination) == false)
+	// If origin or destination are not walkable, return -1
+	if (IsWalkable(origin) == false && IsWalkable(destination) == false)
 	{
 		return -1;
 	}
+	// Create two lists: open, close
+	PathList opened;
+	PathList closed;
 
-	// TODO 2: Create two lists: open, close
 	// Add the origin tile to open
+	PathNode origin_node(1, origin.DistanceManhattan(destination) , origin, nullptr);
+	opened.list.add(origin_node);
+
 	// Iterate while we have tile in the open list
-	PathNode item(0, origin.DistanceTo(destination), origin, nullptr);
-	open_path.list.add(item);
-	
-	while (open_path.list.count())
+
+	while (opened.list.count() != 0)
 	{
-	
-		// TODO 3: Move the lowest score cell from open list to the closed list
-
-		p2List_item<PathNode> * lower = open_path.GetNodeLowestScore();
-		PathNode lower_node = lower->data;
-		open_path.list.del(lower);
-		close_path.list.add(lower_node);
-
-		// TODO 4: If we just added the destination, we are done!
-		// Backtrack to create the final path
-		// Use the Pathnode::parent and Flip() the path when you are finish
-
-		if (lower_node.pos == destination)
+		// Move the lowest score cell from open list to the closed list
+		p2List_item<PathNode>* iterate_node = opened.GetNodeLowestScore();
+		p2List_item<PathNode>* current_node = closed.list.add(iterate_node->data);
+		opened.list.del(iterate_node);
+		iterate_node = nullptr;
+		// If we just added the destination, we are done!
+		if (current_node->data.pos == destination)
 		{
-			for (PathNode node = lower_node; node.parent; node = node.parent)
+			// Backtrack to create the final path
+   
+			for (PathNode* node = (PathNode*)closed.list.end->data.parent; node; node = (PathNode*)node->parent)
 			{
-
+				last_path.PushBack(node->pos);
 			}
+			last_path.Flip();
+			break;
 		}
 
+		// Fill a list of all adjancent nodes
+		PathList adjacent_nodes;
+		current_node->data.FindWalkableAdjacents(adjacent_nodes);
+
+		for (p2List_item<PathNode>* item = adjacent_nodes.list.start; item; item = item->next)
+		{
+			p2List_item<PathNode>*  found_node_closed = (p2List_item<PathNode>*) closed.Find(item->data.pos);
+			p2List_item<PathNode>*  found_node_opened = (p2List_item<PathNode>*) opened.Find(item->data.pos);
+			if (found_node_closed)
+			{
+				continue;
+			}
+			if (found_node_opened) 
+			{
+				if (found_node_opened->data.g > item->data.g )
+				{
+					found_node_opened->data.parent = &current_node->data;
+				}
+			}
+			else
+			{
+				item->data.g = 1 + current_node->data.g;
+				opened.list.add(item->data);
+			}
+		}
 	}
-
-
-	// TODO 5: Fill a list of all adjancent nodes
-
-	// TODO 6: Iterate adjancent nodes:
-	// ignore nodes in the closed list
-	// If it is NOT found, calculate its F and add it to the open list
-	// If it is already in the open list, check if it is a better path (compare G)
-	// If it is a better path, Update the parent
 
 	return -1;
 }

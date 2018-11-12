@@ -46,7 +46,6 @@ public:
 	uchar GetTileAt(const iPoint& pos) const;
 
 private:
-
 	// size of the map
 	uint width;
 	uint height;
@@ -54,9 +53,6 @@ private:
 	uchar* map;
 	// we store the created path here
 	p2DynArray<iPoint> last_path;
-
-	PathList open_path;
-	PathList close_path;
 };
 
 // forward declaration
@@ -69,11 +65,11 @@ struct PathNode
 {
 	// Convenient constructors
 	PathNode();
-	PathNode(int g, int h, const iPoint& pos, const PathNode* parent);
+	PathNode(int g, int h, const iPoint& pos, PathNode* parent);
 	PathNode(const PathNode& node);
 
 	// Fills a list (PathList) of all valid adjacent pathnodes
-	uint FindWalkableAdjacents(PathList& list_to_fill) const;
+	uint FindWalkableAdjacents(PathList& list_to_fill) ;
 	// Calculates this tile score
 	int Score() const;
 	// Calculate the F for a specific destination tile
@@ -83,7 +79,7 @@ struct PathNode
 	int g;
 	int h;
 	iPoint pos;
-	const PathNode* parent; // needed to reconstruct the path in the end
+	PathNode* parent; // needed to reconstruct the path in the end
 };
 
 // ---------------------------------------------------------------------
@@ -100,8 +96,6 @@ struct PathList
 	// -----------
 	// The list itself, note they are not pointers!
 	p2List<PathNode> list;
-
-
 };
 
 
